@@ -4,6 +4,7 @@
 
 ![Portfolio Preview](https://img.shields.io/badge/Style-Neubrutalism-yellow?style=for-the-badge&logo=css3)
 ![Tech Stack](https://img.shields.io/badge/Built%20With-GSAP%20%7C%20Lenis%20%7C%20Split--Type-blue?style=for-the-badge)
+![Created By](https://img.shields.io/badge/Created%20By-Durgesh%20Sonar-orange?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Live-green?style=for-the-badge)
 
 ---
@@ -94,12 +95,12 @@ Ready to sculpt your story?
 ---
 
 ## 🏗️ CREDITS
-- **Design & Development:** [Hulk Jay](https://www.linkedin.com/in/jaydatt-mohan/)
+- **Design & Development:** [Durgesh Sonar](https://github.com/durgeshksonar5)
 - **Powered by:** GSAP, Lenis, Split-Type.
 - **Year:** 2026
 
 ---
 
 <div align="center">
-  <sub>THE EDIT IS NEVER JUST AN EDIT.</sub>
+  <sub>THE EDIT IS NEVER JUST AN EDIT. CREATED BY DURGESH SONAR.</sub>
 </div>
