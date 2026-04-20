@@ -1,0 +1,127 @@
+/* ============================================================
+   SHRIPARTH PORTFOLIO — mobile-fix.css
+   Add this <link> AFTER style.css in your HTML:
+   <link rel="stylesheet" href="mobile-fix.css">
+   ============================================================ */
+
+/* ── Footer heading: prevent ::before ghost on mobile ── */
+@media (max-width: 768px) {
+    .footer-h {
+        font-size: 1.9rem;
+        line-height: 1.05;
+        letter-spacing: -0.5px;
+        /* Reset any clip-path GSAP may apply */
+        clip-path: none !important;
+    }
+
+    /* Hide the decorative shadow-text ::before on mobile — 
+       it stacks visibly when font-size is small */
+    .footer-h::before {
+        display: none;
+    }
+
+    /* ── Social tiles: compact on mobile ── */
+    .social-row {
+        grid-template-columns: 1fr !important;
+        border-radius: 0;
+    }
+
+    .social-tile {
+        min-height: 70px !important;
+        padding: 1rem 1.25rem !important;
+        flex-direction: row !important;
+        align-items: center;
+        justify-content: space-between;
+        border-right: none !important;
+        border-bottom: 2px solid var(--ink) !important;
+    }
+
+    .social-tile:last-child {
+        border-bottom: none !important;
+    }
+
+    .st-abbr {
+        font-size: 0.65rem;
+        opacity: 0.45;
+    }
+
+    .st-name {
+        font-size: 1.3rem !important;
+    }
+
+    /* Arrow indicator on social tiles */
+    .social-tile::after {
+        content: '→';
+        font-family: var(--fh);
+        font-size: 1.4rem;
+        opacity: 0.35;
+        transition: opacity 0.2s, transform 0.2s;
+    }
+    .social-tile:hover::after {
+        opacity: 1;
+        transform: translateX(4px);
+    }
+
+    /* ── Footer CTA section tighter spacing ── */
+    .footer-body {
+        padding: 2.5rem 0 2rem !important;
+    }
+
+    .footer-email-row {
+        margin-bottom: 2rem !important;
+    }
+
+    .footer-email-row .btn {
+        width: 100%;
+        text-align: center;
+        font-size: 0.78rem;
+        padding: 0.85rem 1rem;
+        word-break: break-all;
+    }
+
+    /* ── Footer credits tighter ── */
+    .footer-credits {
+        gap: 0.6rem;
+        padding-top: 1.5rem;
+    }
+
+    .cr-copy {
+        font-size: 0.75rem;
+        letter-spacing: 2px;
+    }
+
+    .cr-tag {
+        font-size: 0.62rem;
+    }
+
+    .cr-dev {
+        font-size: 0.9rem;
+        text-align: center;
+    }
+
+    /* ── Ticker strip: prevent line-breaks ── */
+    .footer-strip {
+        overflow: hidden;
+    }
+
+    .footer-strip .ticker-track {
+        white-space: nowrap;
+        font-size: 0.8rem;
+        letter-spacing: 3px;
+    }
+}
+
+@media (max-width: 480px) {
+    .footer-h {
+        font-size: 1.65rem !important;
+    }
+
+    .social-tile {
+        min-height: 62px !important;
+        padding: 0.85rem 1rem !important;
+    }
+
+    .st-name {
+        font-size: 1.15rem !important;
+    }
+}

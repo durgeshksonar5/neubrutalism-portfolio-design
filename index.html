@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Shriparth | Video Editor & Storyteller</title>
+    <meta name="description"
+        content="Portfolio of Shriparth — cinematic video editor, storyteller, and creator based in Kolhapur, India.">
+    <meta name="theme-color" content="#F4F0E6">
+    <meta name="color-scheme" content="light">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
+
+    <!-- Social preview (WhatsApp / Facebook / LinkedIn) -->
+    <meta property="og:title" content="Shriparth | Video Editor & Storyteller">
+    <meta property="og:description"
+        content="Cinematic video editor. Every cut is a choice, every choice tells a story.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://shriparth.in">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Shriparth | Video Editor">
+    <meta name="twitter:description" content="Cinematic video editor based in Kolhapur, India.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://www.youtube.com/iframe_api" async></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="mobile-fix.css">
+    <noscript>
+        <style>
+            .loader {
+                display: none !important;
+            }
+
+            .reveal-up {
+                opacity: 1 !important;
+                transform: none !important;
+            }
+
+            .hero-h1,
+            .monitor,
+            .hero-tagline,
+            .hero-btns,
+            .monitor-bottom,
+            .scroll-cue {
+                opacity: 1 !important;
+                visibility: visible !important;
+                transform: none !important;
+            }
+        </style>
+    </noscript>
+</head>
+
+<body>
+
+    <div id="scroll-progress"></div>
+    <div class="cursor-dot"></div>
+    <div class="cursor-ring"></div>
+
+    <!-- ─── LOADER ─────────────────────────────────────────────── -->
+    <div class="loader" id="loader">
+        <div class="loader-inner">
+            <div class="ls ls-1"></div>
+            <div class="ls ls-2"></div>
+            <div class="ls ls-3"></div>
+            <p class="loader-label">LOADING<br>THE CUT</p>
+        </div>
+        <div class="loader-progress-track">
+            <div class="loader-progress-fill" id="loaderFill"></div>
+        </div>
+    </div>
+
+    <!-- ─── HEADER ─────────────────────────────────────────────── -->
+    <header class="site-header" id="siteHeader">
+        <div class="logo">SHRIPARTH<span class="logo-dot">.</span></div>
+        <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
+            <span></span><span></span><span></span>
+        </button>
+        <nav class="site-nav" id="siteNav" role="navigation" aria-label="Main navigation">
+            <a href="#about" class="nav-link">About</a>
+            <a href="#work" class="nav-link">Work</a>
+            <a href="#philosophy" class="nav-link">Method</a>
+            <a href="#contact" class="nav-link">Contact</a>
+        </nav>
+        <div class="header-indicator" aria-hidden="true"></div>
+    </header>
+
+    <main>
+
+        <!-- ─── HERO ───────────────────────────────────────────────── -->
+        <section id="hero" class="hero-wrap">
+            <div class="hero-bg-img"></div>
+            <div class="hero-vignette"></div>
+            <div class="scan-line"></div>
+            <div class="hero-grid-overlay" aria-hidden="true"></div>
+
+
+            <div class="hero-edge-line" aria-hidden="true"></div>
+
+
+            <div class="hero-content">
+                <div class="monitor">
+                    <div class="monitor-top">
+                        <div class="monitor-top-left">
+                            <span class="rec-dot"></span>
+                            <span>SHRIPARTH — VIDEO EDITOR</span>
+                        </div>
+                        <div class="monitor-top-right">
+                            <span class="badge-red">4K UHD</span>
+                            <span class="badge-yellow">60 FPS</span>
+                            <span class="badge-live">● LIVE</span>
+                        </div>
+                    </div>
+                    <div class="monitor-body">
+                        <h1 class="hero-h1" id="heroHeadline">
+                            SHRIPARTH:<br>
+                            <span class="col-yellow">CRAFTING</span> THE
+                            <span class="col-blue-light">RHYTHM</span>
+                        </h1>
+                        <p class="hero-tagline">BEYOND THE CUT. BEYOND THE FRAME.</p>
+                        <div class="hero-btns" id="heroBtns">
+                            <a href="#work" class="btn btn-hero-y magnetic">EXPLORE REEL</a>
+                            <a href="#contact" class="btn btn-hero-g magnetic">START PROJECT</a>
+                        </div>
+                    </div>
+                    <div class="monitor-bottom">
+                        <span class="timecode">00:00:00:00</span>
+                        <div class="playback">
+                            <span class="pb-ctrl">⏮</span>
+                            <span class="play-pill">▶ PLAYING</span>
+                            <span class="pb-ctrl">⏭</span>
+                        </div>
+                        <div class="audio-vis">
+                            <span class="aud-lbl">AUDIO L/R</span>
+                            <div class="aud-bars">
+                                <div class="ab" style="height:40%;background:#1A9E5C"></div>
+                                <div class="ab" style="height:85%;background:#1A9E5C"></div>
+                                <div class="ab" style="height:60%;background:#E8B800"></div>
+                                <div class="ab" style="height:92%;background:#C0392B"></div>
+                                <div class="ab" style="height:50%;background:#1A9E5C"></div>
+                                <div class="ab" style="height:72%;background:#1A9E5C"></div>
+                                <div class="ab" style="height:38%;background:#E8B800"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-shape hs1"></div>
+            <div class="hero-shape hs2"></div>
+            <div class="hero-shape hs3"></div>
+
+            <div class="scroll-cue">
+                <span class="sc-text">SCROLL</span>
+                <span class="sc-line"></span>
+            </div>
+            <div class="film-frame-nums" aria-hidden="true">
+                <span>14</span><span>15</span><span>16</span><span>17</span><span>18</span>
+            </div>
+        </section>
+
+        <!-- ─── ABOUT ──────────────────────────────────────────────── -->
+        <section id="about" class="about-section section-pad">
+            <div class="about-glow ag-blue"></div>
+            <div class="about-glow ag-yellow"></div>
+            <div class="about-bg-text" aria-hidden="true"><span>ABOUT ME ABOUT ME ABOUT ME ABOUT ME ABOUT ME ABOUT ME
+                </span></div>
+            <div class="wrap about-grid">
+                <div class="about-left reveal-up">
+                    <span class="stamp-tag">ABOUT ME</span>
+                    <h2 class="about-h2">
+                        <span class="d-block col-blue">The Edit</span>
+                        <span class="d-block">Is Never</span>
+                        <span class="d-block col-yellow-dark">Just an Edit.</span>
+                    </h2>
+                    <div class="about-meta">
+                        <span>📍 Kolhapur, Maharashtra</span>
+                        <span class="sep">|</span>
+                        <span>🎂 22 Years Old</span>
+                        <span class="sep">|</span>
+                        <span>🇮🇳 India</span>
+                    </div>
+                    <div class="about-body">
+                        <p class="about-lead">Hi, I'm Shriparth — a video editor who believes every cut is a choice, and
+                            every choice tells a story.</p>
+                        <p>I started with short films, documentaries, and college reels. Then I built my own YouTube
+                            channel — <a href="https://youtube.com/@kahihihashrii" target="_blank" rel="noopener"
+                                class="link-accent">Kahihi Ha Shri</a> — where I script, research, shoot, light, and
+                            edit everything entirely by myself.</p>
+                        <p>Video essays on cinema, culture, and the fictional characters that quietly ruin us.</p>
+                        <blockquote class="about-quote">
+                            "What drives me isn't software or technique — it's understanding what an edit is supposed to
+                            feel like. Every project gets a different approach because every story deserves its own
+                            rhythm."
+                        </blockquote>
+                    </div>
+                </div>
+                <div class="about-right reveal-up" style="--delay:0.15s">
+                    <div class="img-wrap">
+                        <img src="assets/images/about-shriparth.png" alt="Shriparth — Video Editor" class="about-img"
+                            loading="lazy"
+                            onerror="this.style.minHeight='420px';this.style.background='linear-gradient(160deg,#1e1912 0%,#2e2619 40%,#3d3222 70%,#1a1510 100%)';this.alt=''">
+                        <div class="img-shadow"></div>
+                        <span class="img-badge">EST. 2019</span>
+                        <div class="img-corner img-corner-tl"></div>
+                        <div class="img-corner img-corner-br"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ─── FEATURED WORK ────────────────────────────────────── -->
+        <section id="featured-work" class="featured-section section-pad">
+            <div class="feat-bg-text" aria-hidden="true"><span>MASTERPIECE MASTERPIECE MASTERPIECE MASTERPIECE
+                    MASTERPIECE </span></div>
+            <div class="wrap">
+                <div class="feat-eyebrow-row reveal-up">
+                    <span class="stamp-line"></span>
+                    <span class="eyebrow">Featured Project</span>
+                    <span class="stamp-line"></span>
+                </div>
+                <div class="feat-grid">
+                    <!-- ── Video side ── -->
+                    <div class="feat-vid-col reveal-up" id="featuredVidContainer">
+                        <div class="feat-vid-link vid-frame feat-thumb-frame" style="cursor: default;">
+                            <div class="feat-iframe-host" style="opacity: 1; pointer-events: all; position: relative; aspect-ratio: 16/9;">
+                                <iframe 
+                                    src="https://www.youtube.com/embed/GXsNEZdMbBc?autoplay=1&mute=1&rel=0&modestbranding=1&controls=1&showinfo=0&iv_load_policy=3&enablejsapi=1&loop=1&playlist=GXsNEZdMbBc" 
+                                    title="Featured Project: Silence Between Frames" 
+                                    frameborder="0" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                    allowfullscreen
+                                    style="width: 100%; height: 100%; border: none;">
+                                </iframe>
+                            </div>
+                        </div>
+                        <div class="vid-accent"></div>
+                    </div>
+
+                    <!-- ── Info side ── -->
+                    <div class="feat-info-col reveal-up" style="--delay:0.15s">
+                        <div class="feat-card">
+                            <div class="feat-card-tag">FEATURED PROJECT</div>
+                            <h3 class="feat-title col-yellow-dark">Silence Between Frames</h3>
+                            <p class="feat-desc">A cinematic deep-dive into the emotional power of negative space in
+                                storytelling — exploring how the moments between cuts define a film's soul. Scripted,
+                                shot, lit, and edited entirely by Shriparth over 90+ hours of post-production.</p>
+                            <div class="feat-stats">
+                                <div class="fs-item"><span class="fs-num col-yellow">50K+</span><span
+                                        class="fs-lbl">Views</span></div>
+                                <div class="fs-divider"></div>
+                                <div class="fs-item"><span class="fs-num col-green">90<small>hrs</small></span><span
+                                        class="fs-lbl">Editing</span></div>
+                                <div class="fs-divider"></div>
+                                <div class="fs-item"><span class="fs-num"
+                                        style="color:var(--light)">18<small>min</small></span><span
+                                        class="fs-lbl">Runtime</span></div>
+                            </div>
+                            <div class="feat-tags">
+                                <span class="ftag">Video Essay</span>
+                                <span class="ftag">Cinema Analysis</span>
+                                <span class="ftag">Sound Design</span>
+                                <span class="ftag">Color Grade</span>
+                            </div>
+                            <button class="btn btn-dark btn-block mt-lg feat-watch-btn play-trigger"
+                                data-video-id="featured1" data-play-inline="true">
+                                ▶ &nbsp; WATCH NOW
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ─── PROJECT SHOWCASE ─────────────────────────────────── -->
+        <section id="work" class="work-section section-pad">
+            <div class="dot-bg"></div>
+            <div class="wrap">
+                <div class="work-header">
+                    <h2 class="section-title reveal-up">Project Showcase</h2>
+                    <div class="work-filter reveal-up" style="--delay:0.1s">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="essay">Essay</button>
+                        <button class="filter-btn" data-filter="narrative">Narrative</button>
+                        <button class="filter-btn" data-filter="commercial">Commercial</button>
+                    </div>
+                </div>
+                <div class="proj-grid">
+
+                    <div class="proj-card play-trigger reveal-up" data-video-id="proj1" data-category="essay"
+                        data-num="01" style="--delay:0s" role="button" tabindex="0"
+                        aria-label="Watch: Frames That Broke Us">
+                        <div class="proj-thumb"
+                            style="background-image:url('https://img.youtube.com/vi/7rNf4TygTEw/maxresdefault.jpg')">
+                            <div class="proj-thumb-overlay"></div>
+                            <span class="pt-label">Cinema Essay</span>
+                            <div class="pt-hover"><span>WATCH</span> ▶</div>
+                        </div>
+                        <div class="proj-info">
+                            <div class="proj-info-left">
+                                <span class="proj-num">01</span>
+                                <h3>Frames That Broke Us</h3>
+                            </div>
+                            <span class="proj-tag">Video Essay</span>
+                        </div>
+                    </div>
+
+                    <div class="proj-card play-trigger reveal-up" data-video-id="proj2" data-category="narrative"
+                        data-num="02" style="--delay:0.07s" role="button" tabindex="0"
+                        aria-label="Watch: Golden Hour Noir">
+                        <div class="proj-thumb"
+                            style="background-image:url('https://img.youtube.com/vi/E8WvVFB7klo/maxresdefault.jpg')">
+                            <div class="proj-thumb-overlay"></div>
+                            <span class="pt-label">Short Film Edit</span>
+                            <div class="pt-hover"><span>WATCH</span> ▶</div>
+                        </div>
+                        <div class="proj-info">
+                            <div class="proj-info-left">
+                                <span class="proj-num">02</span>
+                                <h3>Golden Hour Noir</h3>
+                            </div>
+                            <span class="proj-tag">Narrative</span>
+                        </div>
+                    </div>
+
+                    <div class="proj-card play-trigger reveal-up" data-video-id="proj3" data-category="essay"
+                        data-num="03" style="--delay:0.14s" role="button" tabindex="0"
+                        aria-label="Watch: The Uncut Truth">
+                        <div class="proj-thumb proj-thumb-dark">
+                            <div class="proj-thumb-overlay"></div>
+                            <div class="proj-drive-icon">▶</div>
+                            <span class="pt-label">Documentary Edit</span>
+                            <div class="pt-hover"><span>WATCH</span> ▶</div>
+                        </div>
+                        <div class="proj-info">
+                            <div class="proj-info-left">
+                                <span class="proj-num">03</span>
+                                <h3>The Uncut Truth</h3>
+                            </div>
+                            <span class="proj-tag">Documentary</span>
+                        </div>
+                    </div>
+
+                    <div class="proj-card play-trigger reveal-up" data-video-id="proj4" data-category="commercial"
+                        data-num="04" style="--delay:0s" role="button" tabindex="0" aria-label="Watch: Brand in Motion">
+                        <div class="proj-thumb"
+                            style="background-image:url('https://img.youtube.com/vi/15Symfk-qvGEtbBEG6sWaaKqdUErEPEpW/maxresdefault.jpg')">
+                            <div class="proj-thumb-overlay"></div>
+                            <span class="pt-label">Brand Edit</span>
+                            <div class="pt-hover"><span>WATCH</span> ▶</div>
+                        </div>
+                        <div class="proj-info">
+                            <div class="proj-info-left">
+                                <span class="proj-num">04</span>
+                                <h3>Brand in Motion</h3>
+                            </div>
+                            <span class="proj-tag">Commercial</span>
+                        </div>
+                    </div>
+
+                    <div class="proj-card play-trigger reveal-up" data-video-id="proj5" data-category="narrative"
+                        data-num="05" style="--delay:0.07s" role="button" tabindex="0"
+                        aria-label="Watch: Cinematic Pulse">
+                        <div class="proj-thumb"
+                            style="background-image:url('https://img.youtube.com/vi/Te60HUvDC5w/maxresdefault.jpg')">
+                            <div class="proj-thumb-overlay"></div>
+                            <span class="pt-label">Short · Vertical</span>
+                            <div class="pt-hover"><span>WATCH</span> ▶</div>
+                        </div>
+                        <div class="proj-info">
+                            <div class="proj-info-left">
+                                <span class="proj-num">05</span>
+                                <h3>Cinematic Pulse</h3>
+                            </div>
+                            <span class="proj-tag">Short Film</span>
+                        </div>
+                    </div>
+
+                    <div class="proj-card play-trigger reveal-up" data-video-id="proj6" data-category="narrative"
+                        data-num="06" style="--delay:0.14s" role="button" tabindex="0"
+                        aria-label="Watch: Street Energy">
+                        <div class="proj-thumb"
+                            style="background-image:url('https://img.youtube.com/vi/KiQfJWcboAg/maxresdefault.jpg')">
+                            <div class="proj-thumb-overlay"></div>
+                            <span class="pt-label">Short · Vertical</span>
+                            <div class="pt-hover"><span>WATCH</span> ▶</div>
+                        </div>
+                        <div class="proj-info">
+                            <div class="proj-info-left">
+                                <span class="proj-num">06</span>
+                                <h3>Street Energy</h3>
+                            </div>
+                            <span class="proj-tag">Short Film</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ─── QUICK CUTS — SHORTS STRIP ─────────────────────── -->
+        <section class="shorts-section">
+            <div class="shorts-bg-text" aria-hidden="true">SHORTS SHORTS SHORTS SHORTS SHORTS SHORTS SHORTS</div>
+
+            <div class="wrap">
+                <div class="shorts-header">
+                    <div class="shorts-header-left reveal-up">
+                        <div class="shorts-eyebrow-row">
+                            <span class="shorts-yt-badge">
+                                <svg width="16" height="11" viewBox="0 0 16 11" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M15.67 1.72A2 2 0 0 0 14.27.31C13.02 0 8 0 8 0S2.98 0 1.73.31A2 2 0 0 0 .33 1.72C0 2.98 0 5.5 0 5.5s0 2.52.33 3.78A2 2 0 0 0 1.73 10.69C2.98 11 8 11 8 11s5.02 0 6.27-.31a2 2 0 0 0 1.4-1.41C16 8.02 16 5.5 16 5.5s0-2.52-.33-3.78z"
+                                        fill="#FF0000" />
+                                    <path d="M6.4 7.86L10.55 5.5 6.4 3.14v4.72z" fill="#fff" />
+                                </svg>
+                                YOUTUBE SHORTS
+                            </span>
+                            <span class="shorts-count">5 FILMS</span>
+                        </div>
+                        <h2 class="shorts-title">QUICK<br><span class="shorts-title-accent">CUTS</span></h2>
+                        <p class="shorts-sub">Short-form storytelling. Every second earns its place.</p>
+                    </div>
+                    <div class="shorts-header-right reveal-up" style="--delay:0.12s">
+                        <div class="shorts-stat"><span class="ss-num">60</span><span class="ss-lbl">sec max</span></div>
+                        <div class="shorts-divider"></div>
+                        <div class="shorts-stat"><span class="ss-num">9:16</span><span class="ss-lbl">format</span>
+                        </div>
+                        <div class="shorts-divider"></div>
+                        <div class="shorts-stat"><span class="ss-num">5</span><span class="ss-lbl">films</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="shorts-track-wrap">
+                <!-- film perforations left -->
+                <div class="film-perf film-perf-l" aria-hidden="true">
+                    <span></span><span></span><span></span><span></span><span></span><span></span>
+                </div>
+
+                <div class="shorts-track">
+
+                    <div class="short-card" style="cursor: default;">
+                        <div class="short-thumb">
+                            <div class="short-iframe-host" style="opacity: 1; pointer-events: all;">
+                                <iframe 
+                                    src="https://www.youtube.com/embed/VaIK3nOEJhg?autoplay=1&mute=1&rel=0&modestbranding=1&controls=0&showinfo=0&iv_load_policy=3&enablejsapi=1&loop=1&playlist=VaIK3nOEJhg" 
+                                    title="The Reveal" 
+                                    frameborder="0" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                    allowfullscreen
+                                    style="width: 100%; height: 100%; border: none;">
+                                </iframe>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="short-card" style="cursor: default;">
+                        <div class="short-thumb">
+                            <div class="short-iframe-host" style="opacity: 1; pointer-events: all;">
+                                <iframe 
+                                    src="https://www.youtube.com/embed/biz9dt3WI-Q?autoplay=1&mute=1&rel=0&modestbranding=1&controls=0&showinfo=0&iv_load_policy=3&enablejsapi=1&loop=1&playlist=biz9dt3WI-Q" 
+                                    title="After Midnight" 
+                                    frameborder="0" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                    allowfullscreen
+                                    style="width: 100%; height: 100%; border: none;">
+                                </iframe>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="short-card" style="cursor: default;">
+                        <div class="short-thumb">
+                            <div class="short-iframe-host" style="opacity: 1; pointer-events: all;">
+                                <iframe 
+                                    src="https://www.youtube.com/embed/0qDoA_gSulQ?autoplay=1&mute=1&rel=0&modestbranding=1&controls=0&showinfo=0&iv_load_policy=3&enablejsapi=1&loop=1&playlist=0qDoA_gSulQ" 
+                                    title="One Take" 
+                                    frameborder="0" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                    allowfullscreen
+                                    style="width: 100%; height: 100%; border: none;">
+                                </iframe>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="short-card" style="cursor: default;">
+                        <div class="short-thumb">
+                            <div class="short-iframe-host" style="opacity: 1; pointer-events: all;">
+                                <iframe 
+                                    src="https://www.youtube.com/embed/Rr7MueDRwDU?autoplay=1&mute=1&rel=0&modestbranding=1&controls=0&showinfo=0&iv_load_policy=3&enablejsapi=1&loop=1&playlist=Rr7MueDRwDU" 
+                                    title="Motion Study" 
+                                    frameborder="0" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                    allowfullscreen
+                                    style="width: 100%; height: 100%; border: none;">
+                                </iframe>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="short-card" style="cursor: default;">
+                        <div class="short-thumb">
+                            <div class="short-iframe-host" style="opacity: 1; pointer-events: all;">
+                                <iframe 
+                                    src="https://www.youtube.com/embed/EUEsxEKYs0I?autoplay=1&mute=1&rel=0&modestbranding=1&controls=0&showinfo=0&iv_load_policy=3&enablejsapi=1&loop=1&playlist=EUEsxEKYs0I" 
+                                    title="Raw Cut" 
+                                    frameborder="0" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                    allowfullscreen
+                                    style="width: 100%; height: 100%; border: none;">
+                                </iframe>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- film perforations right -->
+                <div class="film-perf film-perf-r" aria-hidden="true">
+                    <span></span><span></span><span></span><span></span><span></span><span></span>
+                </div>
+            </div>
+
+            <div class="shorts-footer wrap">
+                <p class="shorts-scroll-hint">← DRAG TO SCROLL →</p>
+                <a href="https://youtube.com/@kahihihashrii?si=vaoKU4twYvR9PgiY" target="_blank" rel="noopener"
+                    class="shorts-channel-link">VIEW ALL ON YOUTUBE ↗</a>
+            </div>
+        </section>
+
+        <!-- ─── PHILOSOPHY ───────────────────────────────────────── -->
+        <section id="philosophy" class="philo-section">
+            <div class="philo-ticker">
+                <div class="ticker-track">
+                    <span>EDITING IS DIRECTING FOR THE SECOND TIME • EDITING IS DIRECTING FOR THE SECOND TIME • EDITING
+                        IS DIRECTING FOR THE SECOND TIME • EDITING IS DIRECTING FOR THE SECOND TIME • </span>
+                </div>
+            </div>
+            <div class="philo-bg-word" aria-hidden="true">RHYTHM</div>
+            <div class="wrap philo-grid">
+                <div class="philo-left reveal-up">
+                    <h2 class="philo-q">WHAT SEPARATES A GOOD EDIT<br>FROM A GREAT ONE?</h2>
+                    <div class="philo-arrow">↓</div>
+                </div>
+                <div class="philo-right reveal-up" style="--delay:0.18s">
+                    <div class="philo-card-shadow"></div>
+                    <div class="philo-card">
+                        <span class="philo-stamp">THE MANIFESTO</span>
+                        <div class="philo-content">
+                            <span class="purpose-word">PURPOSE.</span>
+                            <p class="mt-md">Most edits look fine.<br>They just stitch <strong>Scene A</strong> to
+                                <strong>Scene B</strong>.</p>
+                            <p>But the edits that stick — the ones that grab you by the collar and refuse to let go —
+                                know exactly <strong>why</strong> they exist.</p>
+                            <p class="mt-md"><strong>Every single decision,</strong></p>
+                            <ul class="mlist">
+                                <li class="bg-yellow">FROM THE CUT</li>
+                                <li class="bg-green">TO THE COLOR</li>
+                                <li class="bg-blue col-white">TO THE SILENCE</li>
+                            </ul>
+                            <p class="mt-md conclusion">...Serves that <strong>purpose.</strong></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ─── SKILLS ───────────────────────────────────────────── -->
+        <section id="skills" class="skills-section section-pad">
+            <div class="wrap">
+                <div class="skills-top">
+                    <div class="reveal-up">
+                        <span class="eyebrow">Tools of the Trade</span>
+                        <h2 class="section-title">Skills &amp;<br>Toolkit</h2>
+                    </div>
+                    <p class="skills-intro reveal-up" style="--delay:0.1s">Every tool chosen with intent.<br>Every
+                        workflow serves the story.</p>
+                </div>
+                <div class="skills-layout">
+                    <div class="tools-grid">
+                        <div class="tool-card">
+                            <div class="ti icon-pr">Pr</div>
+                            <div>
+                                <p class="tn">Premiere Pro</p>
+                                <p class="td">Primary editing &amp; story architecture</p>
+                            </div>
+                        </div>
+                        <div class="tool-card">
+                            <div class="ti icon-ae">Ae</div>
+                            <div>
+                                <p class="tn">After Effects</p>
+                                <p class="td">Motion graphics &amp; visual effects</p>
+                            </div>
+                        </div>
+                        <div class="tool-card">
+                            <div class="ti icon-da">Da</div>
+                            <div>
+                                <p class="tn">DaVinci Resolve</p>
+                                <p class="td">Color grading &amp; finishing</p>
+                            </div>
+                        </div>
+                        <div class="tool-card">
+                            <div class="ti icon-au">Au</div>
+                            <div>
+                                <p class="tn">Adobe Audition</p>
+                                <p class="td">Sound design &amp; audio mix</p>
+                            </div>
+                        </div>
+                        <div class="tool-card">
+                            <div class="ti icon-ps">Ps</div>
+                            <div>
+                                <p class="tn">Photoshop</p>
+                                <p class="td">Graphics &amp; thumbnail design</p>
+                            </div>
+                        </div>
+                        <div class="tool-card">
+                            <div class="ti icon-bl">Bl</div>
+                            <div>
+                                <p class="tn">Blender 3D</p>
+                                <p class="td">3D elements &amp; spatial design</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="skills-aside reveal-up" style="--delay:0.2s">
+                        <div class="s-stats">
+                            <div class="s-stat"><span class="s-num">5+</span><span class="s-lbl">Years Editing</span>
+                            </div>
+                            <div class="s-stat"><span class="s-num">50+</span><span class="s-lbl">Projects</span></div>
+                        </div>
+                        <div>
+                            <p class="spec-label">Specializations</p>
+                            <ul class="spec-list">
+                                <li>Cinematic Color Grading</li>
+                                <li>Motion Graphics &amp; VFX</li>
+                                <li>Sound Design &amp; Audio Mix</li>
+                                <li>YouTube Storytelling</li>
+                                <li>Short Film &amp; Documentary</li>
+                                <li>Commercial &amp; Brand Edits</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ─── YOUTUBE ──────────────────────────────────────────── -->
+        <section class="yt-section">
+            <div class="yt-noise" aria-hidden="true"></div>
+            <div class="wrap text-c">
+                <span class="eyebrow yt-eyebrow">Watch the Work</span>
+                <h2 class="yt-title"><a href="https://youtube.com/@kahihihashrii?si=vaoKU4twYvR9PgiY" target="_blank"
+                        rel="noopener">Kahihi Ha Shri</a></h2>
+                <p class="yt-sub">Subscribe for deep-dive video essays and breakdowns on cinema.</p>
+                <div class="yt-frame">
+                    <div class="yt-frame-bar"><span>▶ NOW PLAYING — KAHIHI HA SHRI</span><span class="yt-live-dot">●
+                            LATEST</span></div>
+                    <iframe width="100%" height="100%" style="aspect-ratio:16/9;display:block;"
+                        src="https://www.youtube.com/embed/videoseries?list=UUTP5oIpNwtGoROjAUOKXL7Q"
+                        title="Kahihi Ha Shri — YouTube Channel" frameborder="0"
+                        allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture;web-share"
+                        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>
+                </div>
+                <a href="https://www.youtube.com/@kahihihashrii" target="_blank" rel="noopener"
+                    class="btn btn-red yt-subscribe-btn">SUBSCRIBE ON YOUTUBE</a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ─── FOOTER ──────────────────────────────────────────── -->
+    <footer id="contact" class="site-footer">
+        <div class="footer-strip">
+            <div class="ticker-track">
+                <span>PROJECTS ARE STORIES WAITING TO BE TOLD &nbsp;•&nbsp; PROJECTS ARE STORIES WAITING TO BE TOLD
+                    &nbsp;•&nbsp; </span>
+                <span aria-hidden="true">PROJECTS ARE STORIES WAITING TO BE TOLD &nbsp;•&nbsp; PROJECTS ARE STORIES
+                    WAITING TO BE TOLD &nbsp;•&nbsp; </span>
+            </div>
+        </div>
+        <div class="footer-body wrap">
+            <div class="text-c reveal-up">
+                <span class="eyebrow footer-eyebrow">Let's Work Together</span>
+                <h2 class="footer-h">READY TO SCULPT<br>YOUR STORY?</h2>
+                <div class="footer-email-row">
+                    <a href="mailto:shriparthc05@gmail.com"
+                        class="btn btn-dark footer-email-btn">
+                        <span class="email-icon">✉</span>
+                        <span>shriparthc05@gmail.com</span>
+                    </a>
+                </div>
+            </div>
+            <div class="social-row reveal-up" style="--delay:0.1s">
+                <a href="https://instagram.com/" target="_blank" rel="noopener" class="social-tile st-ig">
+                    <span class="st-abbr">IG</span><span class="st-name">Instagram</span><span class="st-arrow">↗</span>
+                </a>
+                <a href="https://youtube.com/@kahihihashrii?si=vaoKU4twYvR9PgiY" target="_blank" rel="noopener"
+                    class="social-tile st-yt">
+                    <span class="st-abbr">YT</span><span class="st-name">YouTube</span><span class="st-arrow">↗</span>
+                </a>
+                <a href="https://linkedin.com/" target="_blank" rel="noopener" class="social-tile st-in">
+                    <span class="st-abbr">IN</span><span class="st-name">LinkedIn</span><span class="st-arrow">↗</span>
+                </a>
+            </div>
+            <div class="footer-credits">
+                <p class="cr-copy">© 2026 SHRIPARTH | ALL RIGHTS RESERVED</p>
+                <p class="cr-tag">THE EDIT IS NEVER JUST AN EDIT.</p>
+                <a href="https://www.linkedin.com/in/jaydatt-mohan/" target="_blank" rel="noopener"
+                    class="cr-dev">DESIGNED &amp; DEVELOPED BY <span class="col-yellow">HULK JAY</span></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ─── VIDEO MODAL — Cinematic Hero Dialog ───────────── -->
+    <div class="modal" id="videoModal" role="dialog" aria-modal="true" aria-label="Video player">
+
+        <div class="modal-hero-bg" id="modalHeroBg"></div>
+        <div class="modal-hero-vignette"></div>
+        <div class="modal-scanlines" aria-hidden="true"></div>
+
+        <div class="modal-film-strip" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+        </div>
+
+        <div class="modal-inner" id="modalBox">
+
+            <div class="modal-player-col">
+                <div class="modal-player-frame" id="modalScreen">
+                    <div class="modal-placeholder">
+                        <div class="mp-icon">▶</div>
+                        <p>Select a project to watch</p>
+                    </div>
+                </div>
+                <div class="modal-player-bar">
+                    <span class="mpb-rec"><span class="rec-dot"></span> PLAYING</span>
+                    <span class="mpb-title" id="modalTitle">—</span>
+                    <span class="mpb-hint">
+                        <span class="modal-kbd-desktop">ESC to close</span>
+                        <span class="modal-kbd-mobile">Tap ✕ to close</span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="modal-info-col" id="modalInfoCol">
+                <div class="modal-info-inner">
+                    <div class="modal-info-tag" id="modalInfoTag">PROJECT</div>
+                    <h2 class="modal-info-title" id="modalInfoTitle">—</h2>
+                    <div class="modal-info-divider"></div>
+                    <p class="modal-info-desc" id="modalInfoDesc"></p>
+                    <div class="modal-info-meta" id="modalInfoMeta"></div>
+                </div>
+            </div>
+
+            <button class="modal-close" id="modalClose" aria-label="Close video">✕</button>
+        </div>
+    </div>
+
+    <!-- ─── SCROLL TOP ───────────────────────────────────────── -->
+    <button id="scrollTopBtn" class="scroll-top" aria-label="Scroll to top">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="18 15 12 9 6 15"></polyline>
+        </svg>
+    </button>
+
+    <!-- ─── SCRIPTS — bottom of body so loader never gets stuck ── -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Flip.min.js"></script>
+    <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+    <script src="https://unpkg.com/split-type@0.3.4/umd/index.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
