@@ -154,7 +154,7 @@ if (window.innerWidth > 768 && cursorDot) {
     document.addEventListener('mouseup',   () => cursorRing.classList.remove('clicking'), { passive: true });
 
     // Hover on interactive elements
-    const hoverTargets = 'a, button, .play-trigger, .proj-card, .tool-card, .filter-btn, .social-tile, .vid-frame, .modal-close, .scroll-top, .nav-link';
+    const hoverTargets = 'a, button, .play-trigger, .proj-card, .highlight-card, .tool-card, .filter-btn, .social-tile, .vid-frame, .modal-close, .scroll-top, .nav-link';
 
     document.querySelectorAll(hoverTargets).forEach(el => {
         el.addEventListener('mouseenter', () => {
@@ -586,8 +586,19 @@ function animateRow(cards, startDelay = 0) {
     });
 }
 
-ScrollTrigger.create({ trigger: projCards[0], start: 'top 86%', once: true, onEnter: () => animateRow(projCards.slice(0, 3), 0) });
-ScrollTrigger.create({ trigger: projCards[3], start: 'top 88%', once: true, onEnter: () => animateRow(projCards.slice(3, 6), 0) });
+// Dynamic project card animation rows
+const itemsPerRow = 3;
+for (let i = 0; i < projCards.length; i += itemsPerRow) {
+    const row = projCards.slice(i, i + itemsPerRow);
+    if (row.length === 0) continue;
+    
+    ScrollTrigger.create({
+        trigger: row[0],
+        start: 'top 92%',
+        once: true,
+        onEnter: () => animateRow(row, 0)
+    });
+}
 
 // ── Filter buttons ────────────────────────────────────────
 const filterBtns = document.querySelectorAll('.filter-btn');
@@ -616,7 +627,7 @@ filterBtns.forEach(btn => {
         const id   = card.dataset.videoId;
         const meta = videoMeta[id];
         if (!meta) return;
-        const thumb = card.querySelector('.proj-thumb');
+        const thumb = card.querySelector('.proj-thumb') || card.querySelector('.proj-vid-frame');
         if (!thumb) return;
 
         if (meta.type === 'youtube' || meta.type === 'short') {
@@ -665,24 +676,30 @@ const videoMeta = {
     featured1: { id: 'GXsNEZdMbBc', type: 'youtube', title: 'Silence Between Frames',
                  tag: 'CINEMA ESSAY', desc: 'A cinematic deep-dive into the emotional power of negative space — how the moments between cuts define a film\'s soul.',
                  meta: [['Views','50K+'],['Editing','90 hrs'],['Runtime','18 min']] },
-    proj1:     { id: '7rNf4TygTEw', type: 'youtube', title: 'Frames That Broke Us',
-                 tag: 'VIDEO ESSAY', desc: 'Exploring the cuts, the silences, and the compositions that shattered our perception of what cinema can be.',
+    p1:        { id: 'GXsNEZdMbBc', type: 'youtube', title: 'Silence Between Frames',
+                 tag: 'CINEMA ESSAY', desc: 'Exploring the power of silence and the space between frames in cinematic storytelling.',
                  meta: [['Type','Essay'],['Format','YouTube'],['Category','Cinema']] },
-    proj2:     { id: 'E8WvVFB7klo', type: 'youtube', title: 'Golden Hour Noir',
-                 tag: 'NARRATIVE SHORT', desc: 'A short film that plays with golden-hour light as both a visual style and emotional metaphor for endings.',
-                 meta: [['Type','Short Film'],['Tone','Noir'],['Color','Cinematic']] },
-    proj3:     { id: '1V7s1Uhwp3hlsEPXw1Ak3bYLTsoTlEENI', type: 'drive', title: 'The Uncut Truth',
-                 tag: 'DOCUMENTARY EDIT', desc: 'A documentary edit that lets raw footage breathe — no music, no narration, just the truth in every frame.',
+    p2:        { id: 'Jq9D1OiQO6c', type: 'youtube', title: 'Visual Rhythm',
+                 tag: 'NARRATIVE', desc: 'A study in visual pacing and the rhythmic flow of cinematic imagery.',
+                 meta: [['Type','Narrative'],['Tone','Dynamic'],['Color','Vibrant']] },
+    p3:        { id: 'rds2D-koeRA', type: 'youtube', title: 'The Uncut Truth',
+                 tag: 'DOCUMENTARY', desc: 'A raw, unfiltered look at life through the lens of documentary filmmaking.',
                  meta: [['Type','Documentary'],['Tools','Premiere Pro'],['Grade','DaVinci']] },
-    proj4:     { id: '15Symfk-qvGEtbBEG6sWaaKqdUErEPEpW', type: 'drive', title: 'Brand in Motion',
-                 tag: 'COMMERCIAL EDIT', desc: 'Brand storytelling through fast-paced editing, motion graphics and precise color grading for maximum visual impact.',
-                 meta: [['Type','Commercial'],['Tools','After Effects'],['Grade','Lumetri']] },
-    proj5:     { id: 'Te60HUvDC5w', type: 'short', title: 'Cinematic Pulse',
-                 tag: '⚡ YOUTUBE SHORT', desc: 'Vertical storytelling — fast, punchy, every second earns its place in this cinematic short-form piece.',
-                 meta: [['Format','9:16'],['Length','< 60 sec'],['Platform','Shorts']] },
-    proj6:     { id: 'KiQfJWcboAg', type: 'short', title: 'Street Energy',
-                 tag: '⚡ YOUTUBE SHORT', desc: 'Raw street footage transformed through editing rhythm and sound design into a kinetic visual poem.',
-                 meta: [['Format','9:16'],['Length','< 60 sec'],['Platform','Shorts']] },
+    p4:        { id: 'lYLvPzTBSVE', type: 'youtube', title: 'Cinematic Pulse',
+                 tag: 'NARRATIVE', desc: 'A fast-paced narrative edit focusing on high-energy cinematic transitions.',
+                 meta: [['Type','Narrative'],['Tools','After Effects'],['Grade','Lumetri']] },
+    p5:        { id: '7rNf4TygTEw', type: 'youtube', title: 'Frames That Broke Us',
+                 tag: 'VIDEO ESSAY', desc: 'An analysis of revolutionary editing techniques that changed cinema forever.',
+                 meta: [['Type','Essay'],['Length','< 60 sec'],['Platform','Shorts']] },
+    p6:        { id: 'NIIqW-gSDLk', type: 'youtube', title: 'Brand in Motion',
+                 tag: 'COMMERCIAL', desc: 'High-end commercial storytelling for modern brands in motion.',
+                 meta: [['Type','Commercial'],['Format','YouTube'],['Category','Branding']] },
+    p7:        { id: '_NA9OHg8RC0', type: 'youtube', title: 'Creative Spotlight',
+                 tag: 'NARRATIVE', desc: 'Spotlighting creative editing choices that elevate a narrative piece.',
+                 meta: [['Type','Narrative'],['Style','Creative'],['Mood','Artistic']] },
+    p8:        { id: 'g8QpxHtQKbM', type: 'youtube', title: 'Narrative Short',
+                 tag: 'NARRATIVE', desc: 'A short narrative exploration of character and environment.',
+                 meta: [['Type','Narrative'],['Format','YouTube'],['Style','Story']] },
     short1:    { id: 'VaIK3nOEJhg', type: 'short', title: 'The Reveal',
                  tag: '⚡ YOUTUBE SHORT', desc: 'A single reveal moment stretched into 32 seconds of pure cinematic tension.',
                  meta: [['Duration','0:32'],['Format','9:16'],['Style','Tension']] },
