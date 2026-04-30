@@ -1283,19 +1283,68 @@ if (window.innerWidth > 768) {
 })();
 
 // ── Contact Form Interaction ──────────────────────────────
-const philoForm = document.getElementById('contact-form');
-if (philoForm) {
-    philoForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const btn = philoForm.querySelector('.form-submit');
-        const originalText = btn.textContent;
-        btn.textContent = 'Message Sent!';
-        btn.style.background = 'var(--green)';
-        philoForm.reset();
-        setTimeout(() => {
-            btn.textContent = originalText;
-            btn.style.background = '';
-        }, 3000);
-    });
-}
+document.addEventListener('DOMContentLoaded', () => {
+    const philoForm = document.getElementById('contact-form');
+    if (philoForm) {
+        philoForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const btn = philoForm.querySelector('.form-submit');
+            const originalText = btn.textContent;
+            
+            console.log('Form submission started...');
+            
+            // Visual feedback for loading state
+            btn.textContent = 'Sending...';
+            btn.style.opacity = '0.7';
+            btn.disabled = true;
+
+            const formData = new FormData(philoForm);
+
+            try {
+                const response = await fetch(philoForm.getAttribute('action'), {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                console.log('Server response:', result);
+
+                if (result.success) {
+                    // Success state
+                    btn.textContent = 'Message Sent!';
+                    btn.style.background = 'var(--green)';
+                    btn.style.opacity = '1';
+                    philoForm.reset();
+                    
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                        btn.style.background = '';
+                        btn.disabled = false;
+                    }, 4000);
+                } else {
+                    // Error state from server
+                    throw new Error(result.message || 'Something went wrong.');
+                }
+            } catch (error) {
+                console.error('Submission Error:', error);
+                btn.textContent = 'Error! Try Again';
+                btn.style.background = 'var(--red)';
+                btn.style.opacity = '1';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                    btn.disabled = false;
+                }, 4000);
+                
+                alert('Oops! ' + error.message);
+            }
+        });
+    }
+});
 
