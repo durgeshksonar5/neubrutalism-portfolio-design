@@ -1032,7 +1032,7 @@ if (window.innerWidth > 768) {
         });
     });
 }
-// ── Shorts strip — GSAP Horizontal Carousel ─────────
+// ── Shorts strip — Pure JS Horizontal Carousel ─────────
 (function () {
     const trackWrap = document.querySelector('.shorts-track-wrap');
     const track = document.querySelector('.shorts-track');
@@ -1046,24 +1046,40 @@ if (window.innerWidth > 768) {
 
     if (!cards.length) return;
 
-    let x = 0;
+    // Apply critical CSS via JS to ensure it works regardless of stylesheet updates
+    trackWrap.style.overflow = 'hidden';
+    trackWrap.style.position = 'relative';
+    track.style.display = 'flex';
+    track.style.flexWrap = 'nowrap';
+    track.style.willChange = 'transform';
+    track.style.touchAction = 'pan-y'; // Critical for mobile
+    track.style.transition = 'transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)';
+
+    let currentTranslateX = 0;
     let cardWidth = 0;
     let gap = 0;
     let activeIndex = 0;
     let isDragging = false;
     let startX = 0;
     let startPointerX = 0;
-    let initialTouchY = 0;
-    let isScrollingVertical = false;
-    let velocity = 0;
-    let lastTime = 0;
-    let lastPointerX = 0;
-    let perfHoverTween = null;
+
+    // Inject Drag Shields to permanently fix iframe blocking
+    cards.forEach((card, i) => {
+        const shield = document.createElement('div');
+        shield.className = 'drag-shield';
+        shield.style.position = 'absolute';
+        shield.style.inset = '0';
+        shield.style.zIndex = '50';
+        shield.style.cursor = 'grab';
+        
+        // Prevent default drag behaviors on the shield
+        shield.addEventListener('dragstart', (e) => e.preventDefault());
+        card.appendChild(shield);
+    });
 
     function getMinX() {
         const trackRect = trackWrap.getBoundingClientRect();
         const totalWidth = (cards.length * cardWidth) + ((cards.length - 1) * gap);
-        // padding adjustment if necessary, but max-content + track wrap padding is usually fine
         return Math.min(0, trackRect.width - totalWidth);
     }
 
@@ -1077,9 +1093,10 @@ if (window.innerWidth > 768) {
     }
 
     function updateBounds() {
-        cardWidth = cards[0].offsetWidth;
-        gap = parseFloat(getComputedStyle(track).gap) || 0;
-        snapTo(activeIndex, true);
+        if (!cards.length) return;
+        cardWidth = cards[0].offsetWidth || 280; // Fallback to 280 if hidden
+        gap = parseFloat(getComputedStyle(track).gap) || 20; // Fallback to 20
+        snapTo(activeIndex);
     }
 
     function updateActiveCard() {
@@ -1088,21 +1105,20 @@ if (window.innerWidth > 768) {
             const iframe = iframeHost ? iframeHost.querySelector('iframe') : null;
             
             if (i === activeIndex) {
-                gsap.to(card, { scale: 1.05, opacity: 1, duration: 0.4, ease: 'power3.out' });
-                card.style.zIndex = 2;
-                if (iframeHost) iframeHost.style.pointerEvents = 'all';
+                card.style.transform = 'scale(1.05)';
+                card.style.opacity = '1';
+                card.style.zIndex = '2';
                 
-                // Play and unmute active video
+                // We don't change pointer events here anymore since the drag shield handles interaction
                 if (iframe && iframe.contentWindow) {
                     iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
                     iframe.contentWindow.postMessage('{"event":"command","func":"mute","args":""}', '*');
                 }
             } else {
-                gsap.to(card, { scale: 0.95, opacity: 0.7, duration: 0.4, ease: 'power3.out' });
-                card.style.zIndex = 1;
-                if (iframeHost) iframeHost.style.pointerEvents = 'none';
+                card.style.transform = 'scale(0.95)';
+                card.style.opacity = '0.7';
+                card.style.zIndex = '1';
                 
-                // Pause inactive videos
                 if (iframe && iframe.contentWindow) {
                     iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
                 }
@@ -1113,157 +1129,103 @@ if (window.innerWidth > 768) {
         if (nextBtn) nextBtn.disabled = activeIndex === cards.length - 1;
     }
 
-    function snapTo(index, immediate = false) {
+    function snapTo(index) {
         activeIndex = Math.max(0, Math.min(cards.length - 1, index));
         const targetX = getSnapX(activeIndex);
         
-        if (immediate) {
-            x = targetX;
-            gsap.set(track, { x: x });
-            updateActiveCard();
-        } else {
-            gsap.to(track, { 
-                x: targetX, 
-                duration: 0.6, 
-                ease: 'power3.out',
-                onUpdate: () => { x = gsap.getProperty(track, "x"); },
-                onComplete: updateActiveCard
-            });
-        }
+        currentTranslateX = targetX;
+        track.style.transform = `translateX(${currentTranslateX}px)`;
+        updateActiveCard();
     }
 
     // Controls
     if (prevBtn) prevBtn.addEventListener('click', () => snapTo(activeIndex - 1));
     if (nextBtn) nextBtn.addEventListener('click', () => snapTo(activeIndex + 1));
 
-    // Perforations
-    function startContinuousScroll(direction) {
-        if (perfHoverTween) perfHoverTween.kill();
-        const destIndex = direction === 'left' ? 0 : cards.length - 1;
-        const destX = getSnapX(destIndex);
-        const distance = Math.abs(x - destX);
-        if (distance < 10) return;
-        
-        const duration = distance / 400; // 400px per second
-
-        perfHoverTween = gsap.to(track, {
-            x: destX,
-            duration: duration,
-            ease: 'none',
-            onUpdate: () => { x = gsap.getProperty(track, "x"); }
-        });
-    }
-
-    function stopContinuousScroll() {
-        if (perfHoverTween) {
-            perfHoverTween.kill();
-            perfHoverTween = null;
-            let closestIndex = 0;
-            let minDiff = Infinity;
-            cards.forEach((_, i) => {
-                const diff = Math.abs(x - getSnapX(i));
-                if (diff < minDiff) { minDiff = diff; closestIndex = i; }
-            });
-            snapTo(closestIndex);
-        }
-    }
-
     if (perfL) {
-        perfL.style.pointerEvents = 'auto';
         perfL.style.cursor = 'pointer';
-        perfL.addEventListener('mouseenter', () => startContinuousScroll('left'));
-        perfL.addEventListener('mouseleave', stopContinuousScroll);
-        perfL.addEventListener('click', () => { stopContinuousScroll(); snapTo(activeIndex - 1); });
+        perfL.addEventListener('click', () => snapTo(activeIndex - 1));
     }
     if (perfR) {
-        perfR.style.pointerEvents = 'auto';
         perfR.style.cursor = 'pointer';
-        perfR.addEventListener('mouseenter', () => startContinuousScroll('right'));
-        perfR.addEventListener('mouseleave', stopContinuousScroll);
-        perfR.addEventListener('click', () => { stopContinuousScroll(); snapTo(activeIndex + 1); });
+        perfR.addEventListener('click', () => snapTo(activeIndex + 1));
     }
 
     // Drag Logic
-    trackWrap.addEventListener('pointerdown', (e) => {
+    const startDrag = (e) => {
         if (e.target.closest('button') || e.target.closest('.film-perf')) return;
         
         isDragging = true;
-        isScrollingVertical = false;
-        startPointerX = e.clientX;
-        initialTouchY = e.clientY;
-        startX = x;
-        lastPointerX = e.clientX;
-        lastTime = Date.now();
-        velocity = 0;
+        const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
         
-        gsap.killTweensOf(track);
+        startPointerX = clientX;
+        startX = currentTranslateX;
+        
+        track.style.transition = 'none'; // Instant drag
         track.style.cursor = 'grabbing';
-        track.classList.add('is-dragging');
         
-        // Disable pointer events on all cards during drag
         cards.forEach(c => {
-            const host = c.querySelector('.short-iframe-host');
-            if (host) host.style.pointerEvents = 'none';
+            const s = c.querySelector('.drag-shield');
+            if(s) s.style.cursor = 'grabbing';
         });
-    });
+    };
 
-    window.addEventListener('pointermove', (e) => {
+    const moveDrag = (e) => {
         if (!isDragging) return;
 
-        if (!isScrollingVertical) {
-            const dy = Math.abs(e.clientY - initialTouchY);
-            const dx = Math.abs(e.clientX - startPointerX);
-            if (dy > dx && dy > 10) {
-                isDragging = false;
-                track.style.cursor = 'grab';
-                snapTo(activeIndex);
-                return;
-            } else if (dx > 10) {
-                isScrollingVertical = true;
-            }
-        }
-
-        if (isScrollingVertical && e.cancelable) {
-            e.preventDefault();
-        }
-
-        const dx = e.clientX - startPointerX;
-        x = startX + dx;
+        const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+        const dx = clientX - startPointerX;
         
+        currentTranslateX = startX + dx;
+        
+        // Clamp visually with resistance
         const maxScroll = getSnapX(0);
         const minScroll = getSnapX(cards.length - 1);
-        if (x > maxScroll) x = maxScroll + (x - maxScroll) * 0.3;
-        if (x < minScroll) x = minScroll + (x - minScroll) * 0.3;
+        if (currentTranslateX > maxScroll) currentTranslateX = maxScroll + (currentTranslateX - maxScroll) * 0.3;
+        if (currentTranslateX < minScroll) currentTranslateX = minScroll + (currentTranslateX - minScroll) * 0.3;
 
-        gsap.set(track, { x: x });
+        track.style.transform = `translateX(${currentTranslateX}px)`;
+    };
 
-        const now = Date.now();
-        const dt = now - lastTime;
-        if (dt > 0) {
-            velocity = (e.clientX - lastPointerX) / dt;
-        }
-        lastTime = now;
-        lastPointerX = e.clientX;
-    }, { passive: false });
-
-    window.addEventListener('pointerup', () => {
+    const endDrag = (e) => {
         if (!isDragging) return;
         isDragging = false;
+        
+        track.style.transition = 'transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)';
         track.style.cursor = 'grab';
-        track.classList.remove('is-dragging');
         
-        const projectedX = x + velocity * 150;
-        let closestIndex = 0;
-        let minDiff = Infinity;
-        cards.forEach((_, i) => {
-            const diff = Math.abs(projectedX - getSnapX(i));
-            if (diff < minDiff) { minDiff = diff; closestIndex = i; }
+        cards.forEach(c => {
+            const s = c.querySelector('.drag-shield');
+            if(s) s.style.cursor = 'grab';
         });
-        snapTo(closestIndex);
         
-        // Restore pointer events
-        updateActiveCard();
-    });
+        // Use exact pointer to calculate delta
+        let clientX = startPointerX;
+        if (e && e.type.includes('touch') && e.changedTouches && e.changedTouches.length > 0) {
+            clientX = e.changedTouches[0].clientX;
+        } else if (e && e.clientX !== undefined) {
+            clientX = e.clientX;
+        }
+        
+        const delta = clientX - startPointerX;
+        let destIndex = activeIndex;
+        
+        if (Math.abs(delta) > 50) {
+            if (delta < 0) destIndex++;
+            else destIndex--;
+        }
+
+        snapTo(destIndex);
+    };
+
+    trackWrap.addEventListener('mousedown', startDrag);
+    trackWrap.addEventListener('touchstart', startDrag, { passive: true });
+    
+    window.addEventListener('mousemove', moveDrag);
+    window.addEventListener('touchmove', moveDrag, { passive: true });
+    
+    window.addEventListener('mouseup', endDrag);
+    window.addEventListener('touchend', endDrag);
 
     window.addEventListener('resize', () => {
         clearTimeout(window._shortsResizeTimer);
@@ -1288,23 +1250,34 @@ if (window.innerWidth > 768) {
     const section = document.querySelector('.shorts-section');
     if (section) sectionObserver.observe(section);
 
-    // Intro Animation
-    gsap.set(cards, { y: 40, opacity: 0 });
-    ScrollTrigger.create({
-        trigger: '.shorts-section',
-        start: 'top 80%',
-        once: true,
-        onEnter: () => {
-            gsap.to(cards, {
-                y: 0, opacity: (i) => i === activeIndex ? 1 : 0.7,
-                stagger: 0.1, duration: 0.65, ease: 'power3.out',
-                onComplete: () => {
-                    updateBounds();
-                    updateActiveCard();
+    // Initial load
+    setTimeout(() => {
+        cards.forEach(c => {
+            c.style.opacity = '0';
+            c.style.transform = 'translateY(40px)';
+            c.style.transition = 'transform 0.65s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.65s ease';
+        });
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    observer.unobserve(entry.target);
+                    cards.forEach((c, i) => {
+                        setTimeout(() => {
+                            c.style.transform = 'translateY(0) scale(0.95)';
+                            c.style.opacity = '0.7';
+                            if (i === activeIndex) {
+                                c.style.transform = 'translateY(0) scale(1.05)';
+                                c.style.opacity = '1';
+                            }
+                        }, i * 100);
+                    });
                 }
             });
-        },
-    });
+        }, { threshold: 0.2 });
+        
+        if (section) observer.observe(section);
+        updateBounds();
+    }, 100);
 
-    setTimeout(updateBounds, 100);
 })();
