@@ -1281,3 +1281,21 @@ if (window.innerWidth > 768) {
     }, 100);
 
 })();
+
+// ── Contact Form Interaction ──────────────────────────────
+const philoForm = document.getElementById('contact-form');
+if (philoForm) {
+    philoForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const btn = philoForm.querySelector('.form-submit');
+        const originalText = btn.textContent;
+        btn.textContent = 'Message Sent!';
+        btn.style.background = 'var(--green)';
+        philoForm.reset();
+        setTimeout(() => {
+            btn.textContent = originalText;
+            btn.style.background = '';
+        }, 3000);
+    });
+}
+
