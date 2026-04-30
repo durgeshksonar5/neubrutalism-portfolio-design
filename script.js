@@ -1032,41 +1032,279 @@ if (window.innerWidth > 768) {
         });
     });
 }
-// ── Shorts strip — drag to scroll + cursor hover ─────────
+// ── Shorts strip — GSAP Horizontal Carousel ─────────
 (function () {
+    const trackWrap = document.querySelector('.shorts-track-wrap');
     const track = document.querySelector('.shorts-track');
-    if (!track) return;
+    if (!trackWrap || !track) return;
 
-    let isDown = false, startX = 0, scrollLeft = 0;
+    const cards = Array.from(track.querySelectorAll('.short-card'));
+    const prevBtn = document.querySelector('.shorts-prev');
+    const nextBtn = document.querySelector('.shorts-next');
+    const perfL = document.querySelector('.film-perf-l');
+    const perfR = document.querySelector('.film-perf-r');
 
-    track.addEventListener('mousedown', (e) => {
-        isDown = true;
+    if (!cards.length) return;
+
+    let x = 0;
+    let cardWidth = 0;
+    let gap = 0;
+    let activeIndex = 0;
+    let isDragging = false;
+    let startX = 0;
+    let startPointerX = 0;
+    let initialTouchY = 0;
+    let isScrollingVertical = false;
+    let velocity = 0;
+    let lastTime = 0;
+    let lastPointerX = 0;
+    let perfHoverTween = null;
+
+    function getMinX() {
+        const trackRect = trackWrap.getBoundingClientRect();
+        const totalWidth = (cards.length * cardWidth) + ((cards.length - 1) * gap);
+        // padding adjustment if necessary, but max-content + track wrap padding is usually fine
+        return Math.min(0, trackRect.width - totalWidth);
+    }
+
+    function getSnapX(index) {
+        if (!cards.length) return 0;
+        let snapX = index * -(cardWidth + gap);
+        const minX = getMinX();
+        if (snapX < minX) snapX = minX;
+        if (snapX > 0) snapX = 0;
+        return snapX;
+    }
+
+    function updateBounds() {
+        cardWidth = cards[0].offsetWidth;
+        gap = parseFloat(getComputedStyle(track).gap) || 0;
+        snapTo(activeIndex, true);
+    }
+
+    function updateActiveCard() {
+        cards.forEach((card, i) => {
+            const iframeHost = card.querySelector('.short-iframe-host');
+            const iframe = iframeHost ? iframeHost.querySelector('iframe') : null;
+            
+            if (i === activeIndex) {
+                gsap.to(card, { scale: 1.05, opacity: 1, duration: 0.4, ease: 'power3.out' });
+                card.style.zIndex = 2;
+                if (iframeHost) iframeHost.style.pointerEvents = 'all';
+                
+                // Play and unmute active video
+                if (iframe && iframe.contentWindow) {
+                    iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+                    iframe.contentWindow.postMessage('{"event":"command","func":"mute","args":""}', '*');
+                }
+            } else {
+                gsap.to(card, { scale: 0.95, opacity: 0.7, duration: 0.4, ease: 'power3.out' });
+                card.style.zIndex = 1;
+                if (iframeHost) iframeHost.style.pointerEvents = 'none';
+                
+                // Pause inactive videos
+                if (iframe && iframe.contentWindow) {
+                    iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+                }
+            }
+        });
+        
+        if (prevBtn) prevBtn.disabled = activeIndex === 0;
+        if (nextBtn) nextBtn.disabled = activeIndex === cards.length - 1;
+    }
+
+    function snapTo(index, immediate = false) {
+        activeIndex = Math.max(0, Math.min(cards.length - 1, index));
+        const targetX = getSnapX(activeIndex);
+        
+        if (immediate) {
+            x = targetX;
+            gsap.set(track, { x: x });
+            updateActiveCard();
+        } else {
+            gsap.to(track, { 
+                x: targetX, 
+                duration: 0.6, 
+                ease: 'power3.out',
+                onUpdate: () => { x = gsap.getProperty(track, "x"); },
+                onComplete: updateActiveCard
+            });
+        }
+    }
+
+    // Controls
+    if (prevBtn) prevBtn.addEventListener('click', () => snapTo(activeIndex - 1));
+    if (nextBtn) nextBtn.addEventListener('click', () => snapTo(activeIndex + 1));
+
+    // Perforations
+    function startContinuousScroll(direction) {
+        if (perfHoverTween) perfHoverTween.kill();
+        const destIndex = direction === 'left' ? 0 : cards.length - 1;
+        const destX = getSnapX(destIndex);
+        const distance = Math.abs(x - destX);
+        if (distance < 10) return;
+        
+        const duration = distance / 400; // 400px per second
+
+        perfHoverTween = gsap.to(track, {
+            x: destX,
+            duration: duration,
+            ease: 'none',
+            onUpdate: () => { x = gsap.getProperty(track, "x"); }
+        });
+    }
+
+    function stopContinuousScroll() {
+        if (perfHoverTween) {
+            perfHoverTween.kill();
+            perfHoverTween = null;
+            let closestIndex = 0;
+            let minDiff = Infinity;
+            cards.forEach((_, i) => {
+                const diff = Math.abs(x - getSnapX(i));
+                if (diff < minDiff) { minDiff = diff; closestIndex = i; }
+            });
+            snapTo(closestIndex);
+        }
+    }
+
+    if (perfL) {
+        perfL.style.pointerEvents = 'auto';
+        perfL.style.cursor = 'pointer';
+        perfL.addEventListener('mouseenter', () => startContinuousScroll('left'));
+        perfL.addEventListener('mouseleave', stopContinuousScroll);
+        perfL.addEventListener('click', () => { stopContinuousScroll(); snapTo(activeIndex - 1); });
+    }
+    if (perfR) {
+        perfR.style.pointerEvents = 'auto';
+        perfR.style.cursor = 'pointer';
+        perfR.addEventListener('mouseenter', () => startContinuousScroll('right'));
+        perfR.addEventListener('mouseleave', stopContinuousScroll);
+        perfR.addEventListener('click', () => { stopContinuousScroll(); snapTo(activeIndex + 1); });
+    }
+
+    // Drag Logic
+    trackWrap.addEventListener('pointerdown', (e) => {
+        if (e.target.closest('button') || e.target.closest('.film-perf')) return;
+        
+        isDragging = true;
+        isScrollingVertical = false;
+        startPointerX = e.clientX;
+        initialTouchY = e.clientY;
+        startX = x;
+        lastPointerX = e.clientX;
+        lastTime = Date.now();
+        velocity = 0;
+        
+        gsap.killTweensOf(track);
+        track.style.cursor = 'grabbing';
         track.classList.add('is-dragging');
-        startX    = e.pageX - track.offsetLeft;
-        scrollLeft = track.scrollLeft;
-    });
-    track.addEventListener('mouseleave', () => { isDown = false; track.classList.remove('is-dragging'); });
-    track.addEventListener('mouseup',    () => { isDown = false; track.classList.remove('is-dragging'); });
-    track.addEventListener('mousemove',  (e) => {
-        if (!isDown) return;
-        e.preventDefault();
-        const x    = e.pageX - track.offsetLeft;
-        const walk = (x - startX) * 1.4;
-        track.scrollLeft = scrollLeft - walk;
+        
+        // Disable pointer events on all cards during drag
+        cards.forEach(c => {
+            const host = c.querySelector('.short-iframe-host');
+            if (host) host.style.pointerEvents = 'none';
+        });
     });
 
-    // Animate cards on scroll into view
-    const shortCards = track.querySelectorAll('.short-card');
-    gsap.set(shortCards, { y: 40, opacity: 0 });
+    window.addEventListener('pointermove', (e) => {
+        if (!isDragging) return;
+
+        if (!isScrollingVertical) {
+            const dy = Math.abs(e.clientY - initialTouchY);
+            const dx = Math.abs(e.clientX - startPointerX);
+            if (dy > dx && dy > 10) {
+                isDragging = false;
+                track.style.cursor = 'grab';
+                snapTo(activeIndex);
+                return;
+            } else if (dx > 10) {
+                isScrollingVertical = true;
+            }
+        }
+
+        if (isScrollingVertical && e.cancelable) {
+            e.preventDefault();
+        }
+
+        const dx = e.clientX - startPointerX;
+        x = startX + dx;
+        
+        const maxScroll = getSnapX(0);
+        const minScroll = getSnapX(cards.length - 1);
+        if (x > maxScroll) x = maxScroll + (x - maxScroll) * 0.3;
+        if (x < minScroll) x = minScroll + (x - minScroll) * 0.3;
+
+        gsap.set(track, { x: x });
+
+        const now = Date.now();
+        const dt = now - lastTime;
+        if (dt > 0) {
+            velocity = (e.clientX - lastPointerX) / dt;
+        }
+        lastTime = now;
+        lastPointerX = e.clientX;
+    }, { passive: false });
+
+    window.addEventListener('pointerup', () => {
+        if (!isDragging) return;
+        isDragging = false;
+        track.style.cursor = 'grab';
+        track.classList.remove('is-dragging');
+        
+        const projectedX = x + velocity * 150;
+        let closestIndex = 0;
+        let minDiff = Infinity;
+        cards.forEach((_, i) => {
+            const diff = Math.abs(projectedX - getSnapX(i));
+            if (diff < minDiff) { minDiff = diff; closestIndex = i; }
+        });
+        snapTo(closestIndex);
+        
+        // Restore pointer events
+        updateActiveCard();
+    });
+
+    window.addEventListener('resize', () => {
+        clearTimeout(window._shortsResizeTimer);
+        window._shortsResizeTimer = setTimeout(updateBounds, 100);
+    });
+
+    // Pause when out of view
+    const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) {
+                cards.forEach(card => {
+                    const iframe = card.querySelector('iframe');
+                    if (iframe && iframe.contentWindow) {
+                        iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+                    }
+                });
+            } else {
+                updateActiveCard();
+            }
+        });
+    }, { threshold: 0.1 });
+    const section = document.querySelector('.shorts-section');
+    if (section) sectionObserver.observe(section);
+
+    // Intro Animation
+    gsap.set(cards, { y: 40, opacity: 0 });
     ScrollTrigger.create({
         trigger: '.shorts-section',
         start: 'top 80%',
         once: true,
         onEnter: () => {
-            gsap.to(shortCards, {
-                y: 0, opacity: 1,
+            gsap.to(cards, {
+                y: 0, opacity: (i) => i === activeIndex ? 1 : 0.7,
                 stagger: 0.1, duration: 0.65, ease: 'power3.out',
+                onComplete: () => {
+                    updateBounds();
+                    updateActiveCard();
+                }
             });
         },
     });
+
+    setTimeout(updateBounds, 100);
 })();

@@ -1675,34 +1675,68 @@ body.modal-open .cursor-dot {
 .shorts-track-wrap {
     position: relative;
     padding: 0 32px;
+    max-width: 1300px;
+    margin: 0 auto;
+    overflow: hidden;
+    width: 100%;
 }
 .shorts-track {
     display: flex;
-    gap: 1.1rem;
-    overflow-x: auto;
-    overflow-y: visible;
-    padding: 1rem 0.5rem 1.5rem;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
+    flex-wrap: nowrap;
+    gap: 20px;
+    padding: 2rem 0;
+    will-change: transform;
+    user-select: none;
     cursor: grab;
     position: relative;
     z-index: 1;
-}
-/* Robust centering: centers contents when items don't overflow, 
-   but reverts to standard left-alignment when items exceed viewport width */
-.shorts-track::before,
-.shorts-track::after {
-    content: "";
-    margin: auto;
+    width: max-content;
 }
 .shorts-track::-webkit-scrollbar { display: none; }
 .shorts-track.is-dragging { cursor: grabbing; }
 
+/* ── Navigation Buttons ── */
+.shorts-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(17, 17, 17, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: var(--yellow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    backdrop-filter: blur(8px);
+    transition: background 0.3s, transform 0.3s, opacity 0.3s, border-color 0.3s;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+.shorts-nav:hover {
+    background: rgba(232, 184, 0, 0.15);
+    border-color: var(--yellow);
+    transform: translateY(-50%) scale(1.1);
+}
+.shorts-nav:disabled {
+    opacity: 0.3;
+    pointer-events: none;
+}
+.shorts-prev { left: 40px; }
+.shorts-next { right: 5px; }
+@media (max-width: 768px) {
+    .shorts-prev { left: 10px; width: 40px; height: 40px; }
+    .shorts-next { right: 10px; width: 40px; height: 40px; }
+    .shorts-track-wrap { padding: 0 16px; }
+}
+
 /* ── Short card ───────────────────────────────────────── */
 .short-card {
-    flex: 0 0 195px;
-    scroll-snap-align: start;
+    flex: 0 0 auto;
+    width: 280px;
+    pointer-events: auto;
     border-radius: 14px;
     overflow: hidden;
     display: flex;
@@ -1915,8 +1949,12 @@ body.modal-open .cursor-dot {
     .shorts-section { padding: 3.5rem 0 2rem; }
     .shorts-header { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
     .shorts-header-right { gap: 1.2rem; }
-    .short-card { flex: 0 0 155px; }
+    .short-card { width: 240px; }
     .shorts-footer { flex-direction: column; gap: 0.75rem; text-align: center; }
+}
+
+@media (max-width: 480px) {
+    .short-card { width: 85vw; }
 }
 
 /* short-card as <a> tag — kill default link styles */
