@@ -1348,3 +1348,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// ── Drive poster click-to-load ───────────────────────
+document.querySelectorAll('.drive-poster').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const src = btn.dataset.src;
+        if (!src) return;
+        const iframe = document.createElement('iframe');
+        iframe.src = src;
+        iframe.allow = 'autoplay; encrypted-media';
+        iframe.allowFullscreen = true;
+        iframe.setAttribute('frameborder', '0');
+        btn.replaceWith(iframe);
+    });
+});

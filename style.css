@@ -2538,3 +2538,38 @@ body.modal-open .cursor-dot {
     .yt-shorts-grid { grid-template-columns: 1fr; gap: 32px; }
     .yt-shorts-row { padding: 60px 0; }
 }
+/* ── Drive video custom poster ──────────────────────── */
+.proj-drive .drive-poster {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    border: none; padding: 0;
+    cursor: pointer;
+    background-color: #1a1a1a;
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+    transition: transform 0.4s ease;
+}
+.proj-drive .drive-poster::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.1), rgba(0,0,0,0.55));
+    transition: background 0.3s ease;
+}
+.proj-drive .drive-poster:hover::before {
+    background: linear-gradient(180deg, rgba(0,0,0,0.3), rgba(0,0,0,0.75));
+}
+.proj-drive .drive-play {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    filter: drop-shadow(0 4px 16px rgba(0,0,0,0.55));
+}
+.proj-drive .drive-poster:hover .drive-play {
+    transform: translate(-50%, -50%) scale(1.12);
+}
+.proj-drive iframe {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    border: none;
+}

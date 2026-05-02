@@ -270,6 +270,7 @@
                 
                 <div class="highlight-grid">
                     <!-- Video 1 -->
+
                     <div class="highlight-card reveal-up" style="--delay:0.1s">
                         <div class="highlight-vid-frame">
                             <iframe 
@@ -348,7 +349,7 @@
                     <!-- Project 03 -->
                     <div class="proj-card reveal-up" data-video-id="p3" data-category="essay" data-num="03" style="--delay:0.1s">
                         <div class="proj-vid-frame">
-                            <iframe src="https://www.youtube.com/embed/rds2D-koeRA?rel=0&modestbranding=1" title="The Uncut Truth" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+                            <iframe src="https://drive.google.com/file/d/19TC_cWKPzzCT4ETf-7D5BpnlFbwdvF6n/preview" title="The Uncut Truth" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
                         </div>
                         <div class="proj-info">
                             <div class="proj-info-left">
@@ -361,7 +362,7 @@
                     <!-- Project 04 -->
                     <div class="proj-card reveal-up" data-video-id="p4" data-category="narrative" data-num="04" style="--delay:0s">
                         <div class="proj-vid-frame">
-                            <iframe src="https://www.youtube.com/embed/lYLvPzTBSVE?rel=0&modestbranding=1" title="Cinematic Pulse" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+                            <iframe src="https://drive.google.com/file/d/11xC_5pr4Ug0kYcTWFnkqeYiyHlafGPey/preview" title="Cinematic Pulse" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
                         </div>
                         <div class="proj-info">
                             <div class="proj-info-left">
@@ -374,7 +375,7 @@
                     <!-- Project 05 -->
                     <div class="proj-card reveal-up" data-video-id="p5" data-category="essay" data-num="05" style="--delay:0.05s">
                         <div class="proj-vid-frame">
-                            <iframe src="https://www.youtube.com/embed/7rNf4TygTEw?rel=0&modestbranding=1" title="Frames That Broke Us" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+                            <iframe src="https://drive.google.com/file/d/1hlgDsFjv8Lio9USuhVNkN1XaI8OnihA0/preview" title="Frames That Broke Us" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
                         </div>
                         <div class="proj-info">
                             <div class="proj-info-left">
@@ -800,8 +801,7 @@
             <div class="footer-credits">
                 <p class="cr-copy">© 2026 SHRIPARTH | ALL RIGHTS RESERVED</p>
                 <p class="cr-tag">THE EDIT IS NEVER JUST AN EDIT.</p>
-                <a href="https://www.linkedin.com/in/jaydatt-mohan/" target="_blank" rel="noopener"
-                    class="cr-dev">DESIGNED &amp; DEVELOPED BY <span class="col-yellow">DURGESH SONAR</span></a>
+                
             </div>
         </div>
     </footer>
@@ -868,6 +868,84 @@
     <script src="https://unpkg.com/split-type@0.3.4/umd/index.min.js"></script>
     <script src="script.js"></script>
     <script async src="//www.instagram.com/embed.js"></script>
+   
+    <!-- ─── BULLETPROOF BUTTON FIX ──────────────────────── -->
+    <script>
+    (function () {
+        function init() {
+            // ── Fix scroll-top button ──
+            var topBtn = document.getElementById('scrollTopBtn');
+            if (topBtn) {
+                // Force visible + clickable
+                topBtn.style.pointerEvents = 'auto';
+                topBtn.style.zIndex = '99990';
+                // Remove any blocking listeners by cloning
+                var newTopBtn = topBtn.cloneNode(true);
+                topBtn.parentNode.replaceChild(newTopBtn, topBtn);
+                newTopBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+                // Always show after 500px scroll
+                window.addEventListener('scroll', function () {
+                    if (window.scrollY > 500) newTopBtn.classList.add('is-visible');
+                    else newTopBtn.classList.remove('is-visible');
+                }, { passive: true });
+            }
+
+            // ── Fix shorts carousel arrows ──
+            var prev = document.querySelector('.shorts-prev');
+            var next = document.querySelector('.shorts-next');
+            var track = document.querySelector('.shorts-track');
+            var cards = document.querySelectorAll('.short-card');
+
+            if (prev && next && track && cards.length) {
+                var idx = 0;
+
+                function move(dir) {
+                    idx = Math.max(0, Math.min(cards.length - 1, idx + dir));
+                    var cardW = cards[0].offsetWidth || 280;
+                    var gap = parseFloat(getComputedStyle(track).gap) || 20;
+                    track.style.transition = 'transform 0.6s cubic-bezier(0.22,1,0.36,1)';
+                    track.style.transform = 'translateX(' + (-(cardW + gap) * idx) + 'px)';
+                }
+
+                // Force buttons above everything
+                [prev, next].forEach(function (b) {
+                    b.style.pointerEvents = 'auto';
+                    b.style.zIndex = '999';
+                    // Replace to wipe old broken handlers
+                    var fresh = b.cloneNode(true);
+                    b.parentNode.replaceChild(fresh, b);
+                });
+
+                // Re-grab and bind
+                document.querySelector('.shorts-prev').addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    move(-1);
+                });
+                document.querySelector('.shorts-next').addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    move(+1);
+                });
+            }
+        }
+
+        // Run after everything else is done
+        if (document.readyState === 'complete') {
+            setTimeout(init, 500);
+        } else {
+            window.addEventListener('load', function () { setTimeout(init, 500); });
+        }
+    })();
+    </script>
+
+
+
+
 </body>
 
 </html>
