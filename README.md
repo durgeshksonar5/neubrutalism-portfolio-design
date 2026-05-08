@@ -2,10 +2,14 @@
 
 > **"Every cut is a choice, and every choice tells a story."**
 
+## 🌐 LIVE WEBSITE
+**Access the full portfolio here:** [shriparthedits.vercel.app](https://shriparthedits.vercel.app/)
+
 ![Portfolio Preview](https://img.shields.io/badge/Style-Neubrutalism-yellow?style=for-the-badge&logo=css3)
 ![Tech Stack](https://img.shields.io/badge/Built%20With-GSAP%20%7C%20Lenis%20%7C%20Split--Type-blue?style=for-the-badge)
 ![Created By](https://img.shields.io/badge/Created%20By-Durgesh%20Sonar-orange?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Live-green?style=for-the-badge)
+![Deployment](https://img.shields.io/badge/Vercel-Deployment-black?style=for-the-badge&logo=vercel)
 
 ---
 
