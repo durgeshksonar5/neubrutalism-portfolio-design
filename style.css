@@ -1836,6 +1836,7 @@ body.modal-open .cursor-dot {
     transform: translateY(-10px) scale(1.03);
     box-shadow: 0 20px 48px rgba(0,0,0,0.7), 0 0 0 1px var(--yellow);
     border-color: var(--yellow);
+    opacity: 1;
 }
 .short-card:hover .short-play { opacity: 1; transform: scale(1.1); }
 .short-card:hover .short-overlay { opacity: 0.55; }
@@ -1985,8 +1986,8 @@ body.modal-open .cursor-dot {
 .short-iframe-host { 
     position: absolute; inset: 0; 
     z-index: 15; background: #000; 
-    opacity: 0; transition: opacity 0.8s ease; 
-    pointer-events: none !important;
+    opacity: 1; transition: opacity 0.8s ease; 
+    pointer-events: auto;
     touch-action: pan-y;
 }
 
@@ -1996,7 +1997,7 @@ body.modal-open .cursor-dot {
     background: #000; z-index: 14;
 }
 
-.short-card.video-active .short-iframe-host { opacity: 1; pointer-events: none !important; }
+.short-card.video-active .short-iframe-host { opacity: 1; pointer-events: auto; }
 .short-card.video-active .short-thumb-content { opacity: 0; visibility: hidden; }
 
 .short-iframe-host iframe { width: 100%; height: 100%; border: none; position: relative; z-index: 16; }
@@ -2619,3 +2620,6 @@ body.modal-open .cursor-dot {
     width: 100%; height: 100%;
     border: none;
 }
+/* -- Force Visibility Fix -- */
+.short-iframe-host, .yts-card iframe, .short-card, .yts-card { opacity: 1 !important; visibility: visible !important; transform: none !important; }
+.short-iframe-host iframe { opacity: 1 !important; visibility: visible !important; display: block !important; }

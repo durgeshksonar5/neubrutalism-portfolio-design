@@ -1104,20 +1104,24 @@ if (window.innerWidth > 768) {
             const iframeHost = card.querySelector('.short-iframe-host');
             const iframe = iframeHost ? iframeHost.querySelector('iframe') : null;
             
+            const shield = card.querySelector('.drag-shield');
+            
             if (i === activeIndex) {
                 card.style.transform = 'scale(1.05)';
                 card.style.opacity = '1';
                 card.style.zIndex = '2';
+                card.classList.add('video-active');
                 
-                // We don't change pointer events here anymore since the drag shield handles interaction
-                if (iframe && iframe.contentWindow) {
-                    iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-                    iframe.contentWindow.postMessage('{"event":"command","func":"mute","args":""}', '*');
-                }
+                // Allow interaction with the active video
+                if (shield) shield.style.pointerEvents = 'none';
             } else {
                 card.style.transform = 'scale(0.95)';
                 card.style.opacity = '0.7';
                 card.style.zIndex = '1';
+                card.classList.remove('video-active');
+                
+                // Block interaction on non-active videos to allow dragging the track
+                if (shield) shield.style.pointerEvents = 'auto';
                 
                 if (iframe && iframe.contentWindow) {
                     iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
@@ -1250,33 +1254,19 @@ if (window.innerWidth > 768) {
     const section = document.querySelector('.shorts-section');
     if (section) sectionObserver.observe(section);
 
-    // Initial load
+    // Initial load - making them visible by default to ensure they show up
     setTimeout(() => {
-        cards.forEach(c => {
-            c.style.opacity = '0';
-            c.style.transform = 'translateY(40px)';
+        cards.forEach((c, i) => {
             c.style.transition = 'transform 0.65s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.65s ease';
+            if (i === activeIndex) {
+                c.style.transform = 'translateY(0) scale(1.05)';
+                c.style.opacity = '1';
+            } else {
+                c.style.transform = 'translateY(0) scale(0.95)';
+                c.style.opacity = '0.7';
+            }
         });
         
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    observer.unobserve(entry.target);
-                    cards.forEach((c, i) => {
-                        setTimeout(() => {
-                            c.style.transform = 'translateY(0) scale(0.95)';
-                            c.style.opacity = '0.7';
-                            if (i === activeIndex) {
-                                c.style.transform = 'translateY(0) scale(1.05)';
-                                c.style.opacity = '1';
-                            }
-                        }, i * 100);
-                    });
-                }
-            });
-        }, { threshold: 0.2 });
-        
-        if (section) observer.observe(section);
         updateBounds();
     }, 100);
 
